@@ -319,3 +319,23 @@ BEGIN
     RAISE NOTICE 'Alimentation du modèle en étoile terminée.';
 END;
 $$;
+
+CREATE OR REPLACE VIEW analytics.vw_ca_par_periode_magasin AS
+SELECT
+    m.nom_magasin,
+    t.annee,
+    t.trimestre,
+    t.mois,
+    SUM(f.montant_net) AS chiffre_affaires,
+    SUM(f.quantite_vendue) AS quantite_vendue,
+    COUNT(*) AS nb_ventes
+FROM core.fait_ventes f
+JOIN core.dim_magasin m ON f.id_magasin=m.id_magasin
+JOIN core.dim_temps t ON f.id_temps=t.id_temps
+GROUP BY
+m.nom_magasin,
+t.annee,
+t.trimestre,
+t.mois;
+
+-- La suite apres
